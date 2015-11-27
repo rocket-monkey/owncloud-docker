@@ -1,3 +1,4 @@
 #!/bin/bash
 #/bin/bash
-/usr/sbin/nginx
+exec "/usr/bin/supervisord"
+#exec /workdir/php5-fpm.sh
