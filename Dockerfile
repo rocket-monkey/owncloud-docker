@@ -1,6 +1,6 @@
 FROM debian:jessie
 MAINTAINER Matti Rita-Kasari "matti.rita-kasari@jubic.fi"
-ENV OC_VERSION 8.2.0
+ENV OC_VERSION 8.2.1
 
 RUN apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62
 RUN echo "deb http://nginx.org/packages/mainline/debian/ jessie nginx" >> /etc/apt/sources.list
@@ -36,7 +36,6 @@ RUN mkdir -p /var/www/
 RUN curl -k https://download.owncloud.org/community/owncloud-$OC_VERSION.tar.bz2 | tar jx -C /var/www/
 
 # Fix permissions issues
-RUN touch /var/cache/nginx/client_temp
 RUN chmod -R 777 /var/log/nginx/
 RUN chmod -R 777 /var/cache/nginx/
 RUN mkdir -p /workdir/sv-child-logs
