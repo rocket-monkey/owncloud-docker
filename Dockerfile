@@ -44,10 +44,8 @@ ADD config/php-fpm.conf /etc/php5/fpm/php-fpm.conf
 ADD config/www.conf /etc/php5/fpm/pool.d/www.conf
 ADD passwd.template /workdir/passwd.template
 
-# Add scripts
+# Add entrypoint script
 ADD entrypoint.sh /workdir/entrypoint.sh
-ADD nginx.sh /workdir/nginx.sh
-ADD php5-fpm.sh /workdir/php5-fpm.sh
 
 # We'll link configuration file from data folder
 # so only one volume mount is needed
