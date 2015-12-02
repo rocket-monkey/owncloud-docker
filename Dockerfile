@@ -1,17 +1,12 @@
-FROM debian:jessie
+FROM jubicoy/nginx:latest
 MAINTAINER Matti Rita-Kasari "matti.rita-kasari@jubic.fi"
 ENV OC_VERSION 8.2.1
-
-RUN apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62
-RUN echo "deb http://nginx.org/packages/mainline/debian/ jessie nginx" >> /etc/apt/sources.list
 
 # Unstable repo for certain packages.
 ADD ./apt/unstable.pref /etc/apt/preferences.d/unstable.pref
 ADD ./apt/unstable.list /etc/apt/sources.list.d/unstable.list
 
-ENV NGINX_VERSION 1.9.7-1~jessie
-RUN apt-get update && \
-    apt-get install --fix-missing -y nginx=${NGINX_VERSION} \
+RUN apt-get update && apt-get install -y \
     curl wget bzip2 supervisor \
     php5-fpm \
     php-apc \
@@ -37,9 +32,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN mkdir -p /var/www/
 RUN curl -k https://download.owncloud.org/community/owncloud-$OC_VERSION.tar.bz2 | tar jx -C /var/www/
 
-# Fix permissions issues, we dont want to specify any user
-RUN chmod -R 777 /var/log/nginx/
-RUN chmod -R 777 /var/cache/nginx/
+# Create some needed directories
 RUN mkdir -p /workdir/sv-child-logs
 RUN mkdir -p /var/www/owncloud/data
 
@@ -60,15 +53,18 @@ ADD ./php5-fpm.sh /workdir/php5-fpm.sh
 # so only one volume mount is needed
 RUN touch /var/www/owncloud/data/config.php && ln -s /var/www/owncloud/data/config.php /var/www/owncloud/config/config.php
 
-RUN chmod -R 777 /workdir && chmod -R 0777 /var/www/owncloud/data
-RUN chown -R 104:104 /var/www/owncloud
-
 # Quite dirty fix for data folder permissions.
 # ownCloud does not allow world-writable data folder.
 # Accepting ideas how to work around this issue!
 RUN sed -i 's/substr($perms, -1) != '"'"'0'"'"'/substr($perms, -1) != '"'"'7'"'"'/g' /var/www/owncloud/lib/private/util.php
 RUN sed -i 's/chmod($dataDirectory, 0770);/chmod($dataDirectory, 0777);/g' /var/www/owncloud/lib/private/util.php
 RUN sed -i 's/substr($perms, 2, 1) != '"'"'0'"'"'/substr($perms, 2, 1) != '"'"'7'"'"'/g' /var/www/owncloud/lib/private/util.php
+
+# Fix permissions issues
+#RUN chmod -R 777 /var/log/nginx/
+#RUN chmod -R 777 /var/cache/nginx/
+RUN chown -R 104:0 /workdir && chown -R 104:0 /var/www/owncloud
+RUN chmod -R g+rw /workdir && chmod -R a+x /workdir && chmod -R g+rw /var/www/owncloud
 
 WORKDIR /workdir
 
