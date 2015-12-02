@@ -37,17 +37,17 @@ RUN mkdir -p /workdir/sv-child-logs
 RUN mkdir -p /var/www/owncloud/data
 
 # Add configuration files
-ADD ./default.conf /etc/nginx/conf.d/default.conf
-ADD ./nginx.conf /etc/nginx/nginx.conf
-ADD ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-ADD ./php-fpm.conf /etc/php5/fpm/php-fpm.conf
-ADD ./www.conf /etc/php5/fpm/pool.d/www.conf
-ADD ./passwd.template /workdir/passwd.template
+ADD config/default.conf /etc/nginx/conf.d/default.conf
+ADD config/nginx.conf /etc/nginx/nginx.conf
+ADD config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+ADD config/php-fpm.conf /etc/php5/fpm/php-fpm.conf
+ADD config/www.conf /etc/php5/fpm/pool.d/www.conf
+ADD passwd.template /workdir/passwd.template
 
 # Add scripts
-ADD ./entrypoint.sh /workdir/entrypoint.sh
-ADD ./nginx.sh /workdir/nginx.sh
-ADD ./php5-fpm.sh /workdir/php5-fpm.sh
+ADD entrypoint.sh /workdir/entrypoint.sh
+ADD nginx.sh /workdir/nginx.sh
+ADD php5-fpm.sh /workdir/php5-fpm.sh
 
 # We'll link configuration file from data folder
 # so only one volume mount is needed
