@@ -41,6 +41,7 @@ ADD config/default.conf /etc/nginx/conf.d/default.conf
 ADD config/nginx.conf /etc/nginx/nginx.conf
 ADD config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 ADD config/php-fpm.conf /etc/php5/fpm/php-fpm.conf
+ADD config/php.ini /etc/php5/fpm/php.ini
 ADD config/www.conf /etc/php5/fpm/pool.d/www.conf
 ADD passwd.template /workdir/passwd.template
 
